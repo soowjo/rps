@@ -1,4 +1,7 @@
-function computerPlay() {
+let playerScore = 0;
+let computerScore = 0;
+
+function randomRPS() {
     let ranNum3 = Math.floor(Math.random()*3)
     if (ranNum3 == 0) {
         return 'rock';
@@ -11,43 +14,83 @@ function computerPlay() {
     }
 }
 
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelectionIn, computerSelectionIn) {
     switch (true) {
-        case (playerSelection == 'rock' && computerSelection == 'scissors'):
-        case (playerSelection == 'paper' && computerSelection == 'rock'):
-        case (playerSelection == 'scissors' && computerSelection == 'paper'):
-            console.log("You Win!")
+        case (playerSelectionIn == 'rock' && computerSelectionIn == 'scissors'):
+        case (playerSelectionIn == 'paper' && computerSelectionIn == 'rock'):
+        case (playerSelectionIn == 'scissors' && computerSelectionIn == 'paper'):
             return 'player';
-        case (playerSelection == 'scissors' && computerSelection == 'rock'):
-        case (playerSelection == 'rock' && computerSelection == 'paper'):
-        case (playerSelection == 'paper' && computerSelection == 'scissors'):
-            console.log("You Lose!")
+        case (playerSelectionIn == 'scissors' && computerSelectionIn == 'rock'):
+        case (playerSelectionIn == 'rock' && computerSelectionIn == 'paper'):
+        case (playerSelectionIn == 'paper' && computerSelectionIn == 'scissors'):
             return 'computer';
-        case (playerSelection == computerSelection):
-            console.log("Tie"!)
+        case (playerSelectionIn == computerSelectionIn):
             return 'even';
     }
 }
 
-function game() {
-    for (let i=0; i<5; i++) {
-        let playerScore = 0;
-        let computerScore = 0;
-        let player;
-        do {
-            player = prompt('Enter either rock, paper, or scissors').toLowerCase();
-        } while (!(player == 'rock' || player == 'paper' || player == 'scissors'));
-        let computer = computerPlay();
-        switch (playRound(player, computer)) {
+function game(playerSelectionIn) {
+    let playerSelection = playerSelectionIn
+    let computerSelection = randomRPS();
+    if (playerScore < 5 && computerScore < 5) {
+        switch (playRound(playerSelection, computerSelection)) {
             case 'player':
                 playerScore += 1;
+                playerScoreOut.textContent = `Player: ${playerScore}`;
+                playerSelectionOut.textContent = `Player: ${playerSelection}`;
+                computerSelectionOut.textContent = `Computer: ${computerSelection}`;
                 break;
             case 'computer':
                 computerScore += 1;
+                computerScoreOut.textContent = `Computer: ${computerScore}`;
+                playerSelectionOut.textContent = `Player: ${playerSelection}`;
+                computerSelectionOut.textContent = `Computer: ${computerSelection}`;
                 break;
             case 'even':
+                playerSelectionOut.textContent = `Player: ${playerSelection}`;
+                computerSelectionOut.textContent = `Computer: ${computerSelection}`;
                 break;
         }
-        console.log(i)
+    }
+    if (playerScore == 5) {
+        winnerOut.textContent = 'The winner is player. Click on reset to play another game!';
+        rockButton.disabled = true;
+        paperButton.disabled = true;
+        scissorsButton.disabled = true;
+    }
+    if (computerScore == 5) {
+        winnerOut.textContent = 'The winner is computer. Click on reset to play another game!';
+        rockButton.disabled = true;
+        paperButton.disabled = true;
+        scissorsButton.disabled = true;
     }
 }
+
+function reset() {
+    playerScore = 0;
+    computerScore = 0;
+    winnerOut.textContent = 'The winner is ???';
+    playerScoreOut.textContent = 'Player: 0';
+    computerScoreOut.textContent = 'Player: 0';
+    playerSelectionOut.textContent = 'Player: ?';
+    computerSelectionOut.textContent = 'Computer: ?';
+    rockButton.disabled = false;
+    paperButton.disabled = false;
+    scissorsButton.disabled = false;
+}
+
+const playerScoreOut = document.querySelector('#playerScoreOut');
+const computerScoreOut = document.querySelector('#computerScoreOut');
+const playerSelectionOut = document.querySelector('#playerSelectionOut');
+const computerSelectionOut = document.querySelector('#computerSelectionOut');
+const winnerOut = document.querySelector('#winnerOut');
+
+const rockButton = document.querySelector('#rockButton');
+const paperButton = document.querySelector('#paperButton');
+const scissorsButton = document.querySelector('#scissorsButton');
+const resetButton = document.querySelector('#resetButton');
+
+rockButton.addEventListener('click', () => game('rock'));
+paperButton.addEventListener('click', () => game('paper'));
+scissorsButton.addEventListener('click', () => game('scissors'));
+resetButton.addEventListener('click',reset);
